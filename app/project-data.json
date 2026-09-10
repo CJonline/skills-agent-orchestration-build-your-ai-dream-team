@@ -1,0 +1,52 @@
+{
+  "projects": [
+    {
+      "name": "Customer Insights Portal",
+      "owner": "Jane Doe",
+      "status": "Active",
+      "recentActivity": "Completed stakeholder interviews and started dashboard wireframes.",
+      "priority": "High",
+      "dueDate": "2026-10-02"
+    },
+    {
+      "name": "Mobile Checkout Refresh",
+      "owner": "Marco Chen",
+      "status": "At Risk",
+      "recentActivity": "Payment gateway testing found intermittent timeout failures.",
+      "priority": "High",
+      "dueDate": "2026-09-24"
+    },
+    {
+      "name": "Knowledge Base Migration",
+      "owner": "Aisha Patel",
+      "status": "On Hold",
+      "recentActivity": "Waiting for final content audit from support leadership.",
+      "priority": "Medium",
+      "dueDate": "2026-11-15"
+    },
+    {
+      "name": "Partner API Rollout",
+      "owner": "Luis Ramirez",
+      "status": "Active",
+      "recentActivity": "Published sandbox credentials to the first pilot partner.",
+      "priority": "Medium",
+      "dueDate": "2026-10-20"
+    },
+    {
+      "name": "Accessibility Remediation Sprint",
+      "owner": "Nina Brooks",
+      "status": "Complete",
+      "recentActivity": "Closed all critical contrast and keyboard navigation issues.",
+      "priority": "Low",
+      "dueDate": "2026-09-18"
+    },
+    {
+      "name": "Data Warehouse Cost Review",
+      "owner": "Samir Khan",
+      "status": "Active",
+      "recentActivity": "Tagged high-cost queries and scheduled optimization reviews.",
+      "priority": "Low",
+      "dueDate": "2026-12-05"
+    }
+  ]
+}

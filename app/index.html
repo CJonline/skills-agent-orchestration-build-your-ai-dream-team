@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="dashboard__header">
+    <h1>Project Pulse</h1>
+    <p>Track current project status, priorities, and recent team activity.</p>
+  </header>
+
+  <main>
+    <section class="dashboard" aria-label="Project dashboard">
+      <ul class="project-grid" aria-live="polite"></ul>
+    </section>
+  </main>
+
+  <script>
+    const statusSlugs = {
+      "Active": "active",
+      "At Risk": "at-risk",
+      "On Hold": "on-hold",
+      "Complete": "complete"
+    };
+
+    const prioritySlugs = {
+      "High": "high",
+      "Medium": "medium",
+      "Low": "low"
+    };
+
+    const dashboardSection = document.querySelector(".dashboard");
+    const projectGrid = document.querySelector(".project-grid");
+
+    function createBadge(baseClass, modifierMap, label, value) {
+      const badge = document.createElement("span");
+      const slug = modifierMap[value];
+      badge.className = slug ? `${baseClass} ${baseClass}--${slug}` : baseClass;
+      badge.textContent = `${label}: ${value || "Unknown"}`;
+      return badge;
+    }
+
+    function createProjectCard(project) {
+      const card = document.createElement("li");
+      card.className = "project-card";
+
+      const title = document.createElement("h2");
+      title.className = "project-card__title";
+      title.textContent = project.name || "Untitled project";
+      card.appendChild(title);
+
+      const owner = document.createElement("p");
+      owner.className = "project-card__owner";
+      owner.textContent = `Owner: ${project.owner || "Unassigned"}`;
+      card.appendChild(owner);
+
+      const meta = document.createElement("div");
+      meta.className = "project-card__meta";
+      meta.appendChild(createBadge("status-badge", statusSlugs, "Status", project.status));
+      meta.appendChild(createBadge("priority-badge", prioritySlugs, "Priority", project.priority));
+      card.appendChild(meta);
+
+      const recentActivity = document.createElement("p");
+      recentActivity.className = "recent-activity";
+      recentActivity.textContent = `Recent activity: ${project.recentActivity || "No recent activity recorded."}`;
+      card.appendChild(recentActivity);
+
+      if (project.dueDate) {
+        const dueDate = document.createElement("p");
+        dueDate.className = "project-card__due";
+        dueDate.textContent = `Due: ${project.dueDate}`;
+        card.appendChild(dueDate);
+      }
+
+      return card;
+    }
+
+    function renderEmptyState() {
+      projectGrid.replaceChildren();
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "dashboard__empty";
+      emptyMessage.textContent = "No projects yet.";
+      dashboardSection.appendChild(emptyMessage);
+    }
+
+    function renderErrorState(error) {
+      console.error("Unable to load projects.", error);
+      projectGrid.replaceChildren();
+      const errorMessage = document.createElement("div");
+      errorMessage.className = "dashboard__error";
+      errorMessage.setAttribute("role", "alert");
+      errorMessage.textContent = "Unable to load projects.";
+      dashboardSection.appendChild(errorMessage);
+    }
+
+    function renderProjects(projects) {
+      projectGrid.replaceChildren();
+
+      if (projects.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      projects.forEach((project) => {
+        fragment.appendChild(createProjectCard(project));
+      });
+      projectGrid.appendChild(fragment);
+    }
+
+    async function loadProjects() {
+      try {
+        const response = await fetch("./project-data.json");
+        if (!response.ok) {
+          throw new Error(`Project data request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data || !Array.isArray(data.projects)) {
+          throw new Error("Project data must include a top-level projects array.");
+        }
+
+        renderProjects(data.projects);
+      } catch (error) {
+        renderErrorState(error);
+      }
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>
